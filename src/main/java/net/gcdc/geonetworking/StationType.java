@@ -22,4 +22,8 @@ public enum StationType {
         for (StationType t: StationType.values()) { if (t.value() == value) { return t; } }
         throw new IllegalArgumentException("Unrecognized station type: " + value);
     }
+    
+    public String getName() {
+        return this.name();
+    }
 }

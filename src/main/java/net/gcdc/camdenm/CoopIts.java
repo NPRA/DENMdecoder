@@ -465,6 +465,39 @@ public class CoopIts {
 
         public StationType() { this(unknown); }
         public StationType(int value) { super(value); }
+        
+        public String getName() {
+            switch((int)value){
+                case unknown:
+                    return "unknown";
+                case pedestrian:
+                    return "pedestrian";
+                case cyclist:
+                    return "cyclist";
+                case moped:
+                    return "moped";
+                case motorcycle:
+                    return "motorcycle";
+                case passengerCar:
+                    return "passengerCar";
+                case bus:
+                    return "bus";
+                case lightTruck:
+                    return "lightTruck";
+                case heavyTruck:
+                    return "heavyTruck";
+                case trailer:
+                    return "trailer";
+                case specialVehicles:
+                    return "specialVehicles";
+                case tram:
+                    return "tram";
+                case roadSideUnit:
+                    return "roadSideUnit";
+                default:
+                    return "unknown";
+            }
+        }
     }
 
     @Sequence
@@ -2306,6 +2339,63 @@ public class CoopIts {
 
         public CauseCodeType() { this(reserved); }
         public CauseCodeType(int value) { super(value); }
+        
+        public String getName() {
+            switch((int)this.value){
+                case reserved:
+                    return "reserved";
+                case trafficCondition:
+                    return "trafficCondition";
+                case accident:
+                    return "accident";
+                case roadworks:
+                    return "roadworks";
+                case adverseWeatherCondition_Adhesion:
+                    return "adverseWeatherCondition_Adhesion";
+                case hazardousLocation_SurfaceCondition:
+                    return "hazardousLocation_SurfaceCondition";
+                case hazardousLocation_ObstacleOnTheRoad:
+                    return "hazardousLocation_ObstacleOnTheRoad";
+                case hazardousLocation_AnimalOnTheRoad:
+                    return "hazardousLocation_AnimalOnTheRoad";
+                case humanPresenceOnTheRoad:
+                    return "humanPresenceOnTheRoad";
+                case wrongWayDriving:
+                    return "wrongWayDriving";
+                case rescueAndRecoveryWorkInProgress:
+                    return "rescueAndRecoveryWorkInProgress";
+                case adverseWeatherCondition_ExtremeWeatherCondition:
+                    return "adverseWeatherCondition_ExtremeWeatherCondition";
+                case adverseWeatherCondition_Visibility:
+                    return "adverseWeatherCondition_Visibility";
+                case adverseWeatherCondition_Precipitation:
+                    return "adverseWeatherCondition_Precipitation";
+                case slowVehicle:
+                    return "slowVehicle";
+                case dangerousEndOfQueue:
+                    return "dangerousEndOfQueue";
+                case vehicleBreakdown:
+                    return "vehicleBreakdown";
+                case postCrash:
+                    return "postCrash";
+                case humanProblem:
+                    return "humanProblem";
+                case stationaryVehicle:
+                    return "stationaryVehicle";
+                case emergencyVehicleApproaching:
+                    return "emergencyVehicleApproaching";
+                case hazardousLocation_DangerousCurve:
+                    return "hazardousLocation_DangerousCurve";
+                case collisionRisk:
+                    return "collisionRisk";
+                case signalViolation:
+                    return "signalViolation";
+                case dangerousSituation:
+                    return "dangerousSituation";
+                default:
+                    return "unknown";
+            }
+        }
     }
 
     @IntRange(minValue = 0, maxValue = 255)
@@ -2511,7 +2601,7 @@ public class CoopIts {
 
         @Override
         public String toString(){
-        	return "ManagementContainer(\n\t\t\t"+actionID+",\n\t\t\tdetectionTime: "+detectionTime+",\n\t\t\treferenceTime: "+referenceTime+",\n\t\t\t"+ eventPosition+",\n\t\t\tstationType: "+ stationType+",\n\t\t\t"
+        	return "ManagementContainer(\n\t\t\t"+actionID+",\n\t\t\tdetectionTime: "+detectionTime+",\n\t\t\treferenceTime: "+referenceTime+",\n\t\t\t"+ eventPosition+",\n\t\t\tstationType: "+ stationType+"("+stationType.getName()+"),\n\t\t\t"
         			+(termination!=null?termination.toString():"Termination(null)")+",\n\t\t\t"
         			+(relevanceDistance!=null?relevanceDistance.toString():"RelevanceDistance(null)")+",\n\t\t\t"
         			+(relevanceTrafficDirection!=null?relevanceTrafficDirection.toString():"RelevanceTrafficDirection(null)")+",\n\t\t\tValidityDuration: "
@@ -2834,7 +2924,7 @@ public class CoopIts {
         @Override
         public String toString() {
             // TODO Auto-generated method stub
-            return "SituationContainer(InformationQual:"+this.getInformationQuality().value+", CauseCode:"+this.getEventType().getCauseCode().value+", subCauseCode:"+this.getEventType().getSubCauseCode().value+")";
+            return "SituationContainer(InformationQual:"+this.getInformationQuality().value+", CauseCode:"+this.getEventType().getCauseCode().value+"("+this.getEventType().getCauseCode().getName()+")"+", subCauseCode:"+this.getEventType().getSubCauseCode().value+")";
         }
     }
 
