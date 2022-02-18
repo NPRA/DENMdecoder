@@ -23,6 +23,8 @@ import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypes.SizeRange;
 import net.gcdc.camdenm.CoopIts.ItsPduHeader.MessageId;
 
+//terrible hack in situationcontainer (sorry)
+
 /**
  * A hand-made class for Cooperative Awareness Message (CAM) and Decentralized Environment
  * Notification Message (DENM).
@@ -2285,6 +2287,7 @@ public class CoopIts {
 		}
     }
 
+    //TODO: Ive added the paddingclass as a version 2 hack
     @Sequence
     public static class CauseCode {
         CauseCodeType causeCode;
@@ -2496,14 +2499,28 @@ public class CoopIts {
         }
     }
 
+    //select class based on version 1 or 2
+    public interface DenmInterface {
+        public ItsPduHeader getHeader();
+		public DecentralizedEnvironmentalNotificationMessageInterface getDenm();
+		public String toString();
+    }
+    public interface DecentralizedEnvironmentalNotificationMessageInterface {
+
+    }
+    public interface SituationContainerInterface {
+
+    }
+
     @Sequence
-    public static class Denm {
+    public static class Denm implements DenmInterface {
         ItsPduHeader header;
         DecentralizedEnvironmentalNotificationMessage denm;
 
         public Denm() { this (new ItsPduHeader(new MessageId(MessageId.denm)), new DecentralizedEnvironmentalNotificationMessage()); }
 
         public Denm(ItsPduHeader header, DecentralizedEnvironmentalNotificationMessage denm) {
+            
             this.header = header;
             this.denm = denm;
         }
@@ -2513,7 +2530,34 @@ public class CoopIts {
             return header;
 		}
 
-		public DecentralizedEnvironmentalNotificationMessage getDenm() {
+		public DecentralizedEnvironmentalNotificationMessageInterface getDenm() {
+
+            return denm;
+		}
+		public String toString(){
+
+            return "Denm(\n\t"+header+",\n\t"+denm+"\n)";
+		}
+    }
+    @Sequence
+    public static class Denm2 implements DenmInterface {
+        ItsPduHeader header;
+        DecentralizedEnvironmentalNotificationMessage2 denm;
+
+        public Denm2() { this (new ItsPduHeader(new MessageId(MessageId.denm)), new DecentralizedEnvironmentalNotificationMessage2()); }
+
+        public Denm2(ItsPduHeader header, DecentralizedEnvironmentalNotificationMessage2 denm) {
+            
+            this.header = header;
+            this.denm = denm;
+        }
+
+		public ItsPduHeader getHeader() {
+
+            return header;
+		}
+
+		public DecentralizedEnvironmentalNotificationMessageInterface getDenm() {
 
             return denm;
 		}
@@ -2523,8 +2567,71 @@ public class CoopIts {
 		}
     }
 
+
     @Sequence
-    public static class DecentralizedEnvironmentalNotificationMessage {
+    public static class DecentralizedEnvironmentalNotificationMessage2 implements DecentralizedEnvironmentalNotificationMessageInterface {
+        ManagementContainer management;
+        @Asn1Optional SituationContainer2 situation;
+        @Asn1Optional LocationContainer location;
+        @Asn1Optional AlacarteContainer alacarte;
+
+        public DecentralizedEnvironmentalNotificationMessage2() {
+            this(new ManagementContainer());
+        }
+
+        public DecentralizedEnvironmentalNotificationMessage2(ManagementContainer management) {
+            this(management, null, null, null);
+        }
+        
+        public DecentralizedEnvironmentalNotificationMessage2(
+                ManagementContainer management,
+                SituationContainer2 situation,
+                LocationContainer location,
+                AlacarteContainer alacarte) {
+            this.management = management;
+            this.situation = situation;
+            this.location = location;
+            this.alacarte = alacarte;
+        }
+
+		public ManagementContainer getManagement() {
+
+            return management;
+		}
+		public boolean hasSituation(){
+
+            return situation!=null;
+		}
+		public SituationContainer2 getSituation() {
+
+            return situation;
+		}
+		public boolean hasLocation(){
+
+            return location!=null;
+		}
+		public LocationContainer getLocation() {
+
+            return location;
+		}
+		public boolean hasAlacarte(){
+			return alacarte!=null;
+		}
+		public AlacarteContainer getAlacarte() {
+
+            return alacarte;
+		}
+		@Override
+        public String toString(){
+        	return "Denmbody(\n\t\t"+management+",\n\t\t"
+        			+(situation!=null?situation.toString():"SituationContainer(null)")+",\n\t\t"
+        			+(location!=null?location.toString():"LocationContainer(null)")+",\n\t\t"
+        			+(alacarte!=null?alacarte.toString():"AlacarteContainer(null)")+"\n\t\t)";
+        }
+    }
+
+    @Sequence
+    public static class DecentralizedEnvironmentalNotificationMessage implements DecentralizedEnvironmentalNotificationMessageInterface {
         ManagementContainer management;
         @Asn1Optional SituationContainer situation;
         @Asn1Optional LocationContainer location;
@@ -2872,7 +2979,65 @@ public class CoopIts {
 
     @Sequence
     @HasExtensionMarker
-    public static class SituationContainer {
+    public static class SituationContainer2 implements SituationContainerInterface {
+        InformationQuality informationQuality;
+        Boolean iDontKnowWhatThisFieldIs; //TODO: HACK TO FIX VERSION 2 COMPATIBILITY!!!! OMG.. this is terrible. :(
+        CauseCode eventType;
+        @Asn1Optional CauseCode linkedCause;
+        @Asn1Optional EventHistory eventHistory;
+
+        public SituationContainer2() {
+            this(new InformationQuality(), new CauseCode());
+        }
+        public SituationContainer2(InformationQuality informationQuality, CauseCode eventType) {
+            this(informationQuality, eventType, null, null);
+        }
+        public SituationContainer2(
+                InformationQuality informationQuality,
+                CauseCode eventType,
+                CauseCode linkedCause,
+                EventHistory eventHistory
+                ) {
+            this.informationQuality = informationQuality;
+            this.eventType = eventType;
+            this.linkedCause = linkedCause;
+            this.eventHistory = eventHistory;
+        }
+		public InformationQuality getInformationQuality() {
+
+            return informationQuality;
+		}
+
+		public CauseCode getEventType() {
+
+            return eventType;
+		}
+		public boolean hasLinkedCause(){
+
+            return linkedCause!=null;
+		}
+		public CauseCode getLinkedCause() {
+
+            return linkedCause;
+		}
+		public boolean hasEventHistory(){
+			return eventHistory!=null;
+
+		}
+		public EventHistory getEventHistory() {
+
+            return eventHistory;
+		}
+
+        @Override
+        public String toString() {
+            return "SituationContainer(InformationQual:"+this.getInformationQuality().value+", CauseCode:"+this.getEventType().getCauseCode().value+"("+this.getEventType().getCauseCode().getName()+")"+", subCauseCode:"+this.getEventType().getSubCauseCode().value+")";
+        }
+    }
+
+    @Sequence
+    @HasExtensionMarker
+    public static class SituationContainer implements SituationContainerInterface {
         InformationQuality informationQuality;
         CauseCode eventType;
         @Asn1Optional CauseCode linkedCause;

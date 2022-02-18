@@ -2,6 +2,9 @@ package net.gcdc.camdenm;
 
 import net.gcdc.asn1.uper.UperEncoder;
 import net.gcdc.camdenm.CoopIts.Denm;
+import net.gcdc.camdenm.CoopIts.Denm2;
+import net.gcdc.camdenm.CoopIts.DenmInterface;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,22 +24,26 @@ public class RunDecode {
         return decoded.getHeader().stationID.value;
     }
 
-    public static Denm getDecoded(byte[] encoded) throws IllegalArgumentException, IllegalAccessException, InstantiationException, AssertionError {
-        return UperEncoder.decode(encoded, Denm.class);
+    public static DenmInterface getDecoded(byte[] encoded) throws IllegalArgumentException, IllegalAccessException, InstantiationException, AssertionError {
+        DenmInterface denm = UperEncoder.decode(encoded, Denm.class);
+        if(denm.getHeader().protocolVersion.value == 2)
+            denm = UperEncoder.decode(encoded, Denm2.class);
+        return denm;
     }
 
-    public static void runSearch()
+    public static void runSearch(String msg)
     {
         System.out.println("Searching..");
-        int size = RunDecode.testmsg.length();
+        int size = msg.length();
         for(int j = 0; j<size;j++)
         {
             for (int i = size-j; i >= 0 ; i--) {
-                String str = RunDecode.testmsg.substring(i, size-j);
+                String str = msg.substring(i, size-j);
                 try {
                     //System.out.println(str+" - "+i+","+j);
-                    if(RunDecode.myTest(str) == 777777777)
+                    if(RunDecode.myTest(str) == 12345)//777777777)
                         System.out.println("index: "+i+","+j+" - "+size);
+                        System.exit(0);
                 } catch (Throwable e) {
                     //e.printStackTrace();
                 }
@@ -45,12 +52,13 @@ public class RunDecode {
     }
 
     public static void main(String[] args) {
-        String str = "07D2000001012E5BF27181172DF93889179099916F5004266474DFC5959EDC071B0CC38FFFFFFE11DBBA10070800001804";//RunDecode.testmsg.substring(134, 224);
-        str = str.substring(8,str.length());
+        String str = "02 01 00 00 30 39 E3 00 00 18 1C 80 00 10 A7 12 26 42 04 29 C6 17 DA AD 86 76 D8 87 44 23 27 4F FF FF F9 6A DB BA 1F 00 00 01 43 80 C0 50 00 0F C0 00 00";//"07D2000001012E5BF27181172DF93889179099916F5004266474DFC5959EDC071B0CC38FFFFFFE11DBBA10070800001804";//RunDecode.testmsg.substring(134, 224);
+        //str = str.substring(8,str.length());
         System.out.println(str);
         System.out.println(RunDecode.testmsg.substring(134, 224));
+        runSearch(str);
         try {
-            RunDecode.myTest(str);
+            System.out.println(RunDecode.myTest(str));
         } catch (Throwable e) {
             //e.printStackTrace();
         }
