@@ -285,7 +285,7 @@ public final class UperEncoder {
         final long result = lowerBound + big.longValue();
         logger.debug("-bits {} decoded as {} plus lower bound {} give {} (upper bound: {})",
                 relevantBits.toBooleanStringFromPosition(0), big.longValue(), lowerBound, result, upperBound);
-        System.out.println(relevantBits.toBooleanStringFromPosition(0));
+        //logger.debug(relevantBits.toBooleanStringFromPosition(0));
         if ((result < intRange.minValue() || intRange.maxValue() < result)
                 && !intRange.hasExtensionMarker()) {
             throw new AssertionError("Decoded value "

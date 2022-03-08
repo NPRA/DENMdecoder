@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.gcdc</groupId>
     <artifactId>geonetworking</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <name>GeoNetworking</name>
     <description>ETSI GeoNetworking stack</description>
     <packaging>jar</packaging>

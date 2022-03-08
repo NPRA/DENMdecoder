@@ -57,7 +57,7 @@ public class StationConfig {
 
     public StationConfig() {
         setItsGnLocalGnAddr(Address.random(false, StationType.Passenger_Car, 752).value());
-        setItsGnProtocolVersion(0);
+        setItsGnProtocolVersion(1);
         setItsGnDefaultPacketLifetime(60);
         setItsGnDefaultHopLimit(10);
         setItsGnDefaultTrafficClass(ZERO_BYTE);

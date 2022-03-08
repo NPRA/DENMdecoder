@@ -21,6 +21,7 @@ import net.gcdc.asn1.datatypes.OctetString;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypes.SizeRange;
+import net.gcdc.camdenm.CoopIts1.SafetyCarContainer;
 import net.gcdc.camdenm.CoopIts.ItsPduHeader.MessageId;
 
 //terrible hack in situationcontainer (sorry)
@@ -2251,7 +2252,7 @@ public class CoopIts {
     @Sequence
     public static class EmergencyContainer {
         LightBarSirenInUse lightBarSirenInUse;
-        @Asn1Optional CauseCode incidentIndication;
+        @Asn1Optional CauseCodeInterface incidentIndication;
         @Asn1Optional EmergencyPriority emergencyPriority;
 
         public EmergencyContainer() {
@@ -2263,7 +2264,7 @@ public class CoopIts {
         }
 
         public EmergencyContainer(LightBarSirenInUse lightBarSirenInUse,
-        CauseCode incidentIndication,
+        CauseCodeInterface incidentIndication,
         EmergencyPriority emergencyPriority) {
             this.lightBarSirenInUse = lightBarSirenInUse;
             this.incidentIndication = incidentIndication;
@@ -2276,7 +2277,7 @@ public class CoopIts {
 		public boolean hasIncidentIndication(){
 			return incidentIndication!=null;
 		}
-		public CauseCode getIncidentIndication() {
+		public CauseCodeInterface getIncidentIndication() {
 			return incidentIndication;
 		}
 		public boolean hasEmergencyPriority(){
@@ -2287,16 +2288,45 @@ public class CoopIts {
 		}
     }
 
-    //TODO: Ive added the paddingclass as a version 2 hack
+    public interface CauseCodeInterface {
+        public CauseCodeType getCauseCode();
+		public SubCauseCodeType getSubCauseCode();
+    }
+
+    //TODO: create interface here
     @Sequence
-    public static class CauseCode {
+    public static class CauseCode1 implements CauseCodeInterface {
         CauseCodeType causeCode;
         SubCauseCodeType subCauseCode;
 
-        public CauseCode() {
+        public CauseCode1() {
             this(new CauseCodeType(), new SubCauseCodeType());
         }
-        public CauseCode(CauseCodeType causeCode,
+        public CauseCode1(CauseCodeType causeCode,
+        SubCauseCodeType subCauseCode) {
+            this.causeCode = causeCode;
+            this.subCauseCode = subCauseCode;
+        }
+		public CauseCodeType getCauseCode() {
+
+            return causeCode;
+		}
+		public SubCauseCodeType getSubCauseCode() {
+
+            return subCauseCode;
+		}
+    }
+
+    @Sequence
+    @HasExtensionMarker
+    public static class CauseCode2 implements CauseCodeInterface {
+        CauseCodeType causeCode;
+        SubCauseCodeType subCauseCode;
+
+        public CauseCode2() {
+            this(new CauseCodeType(), new SubCauseCodeType());
+        }
+        public CauseCode2(CauseCodeType causeCode,
         SubCauseCodeType subCauseCode) {
             this.causeCode = causeCode;
             this.subCauseCode = subCauseCode;
@@ -2422,17 +2452,27 @@ public class CoopIts {
 		}
     }
 
+    public interface SafetyCarContainerInterface {
+        public LightBarSirenInUse getLightBarSirenInUse();
+		public boolean hasIncidentIndication();
+		public CauseCodeInterface getIncidentIndication();
+		public boolean hasTrafficRule();
+		public TrafficRule getTrafficRule();
+		public boolean hasSpeedLimit();
+		public SpeedLimit getSpeedLimit();
+    }
+
     @Sequence
-    public static class SafetyCarContainer {
+    public static class SafetyCarContainer1 implements SafetyCarContainerInterface {
         LightBarSirenInUse lightBarSirenInUse;
-        @Asn1Optional CauseCode incidentIndication;
+        @Asn1Optional CauseCode1 incidentIndication;
         @Asn1Optional TrafficRule trafficRule;
         @Asn1Optional SpeedLimit speedLimit;
 
-        public SafetyCarContainer() { this(new LightBarSirenInUse()); }
-        public SafetyCarContainer(LightBarSirenInUse lightBarSirenInUse) { this(lightBarSirenInUse, null, null, null); }
-        public SafetyCarContainer(LightBarSirenInUse lightBarSirenInUse,
-                CauseCode incidentIndication,
+        public SafetyCarContainer1() { this(new LightBarSirenInUse()); }
+        public SafetyCarContainer1(LightBarSirenInUse lightBarSirenInUse) { this(lightBarSirenInUse, null, null, null); }
+        public SafetyCarContainer1(LightBarSirenInUse lightBarSirenInUse,
+                CauseCode1 incidentIndication,
              TrafficRule trafficRule,
              SpeedLimit speedLimit) {
             this.lightBarSirenInUse = lightBarSirenInUse;
@@ -2448,7 +2488,54 @@ public class CoopIts {
 
             return incidentIndication!=null;
 		}
-		public CauseCode getIncidentIndication() {
+		public CauseCodeInterface getIncidentIndication() {
+
+            return incidentIndication;
+		}
+		public boolean hasTrafficRule(){
+
+            return trafficRule!=null;
+		}
+		public TrafficRule getTrafficRule() {
+
+            return trafficRule;
+		}
+		public boolean hasSpeedLimit(){
+
+            return speedLimit!=null;
+		}
+		public SpeedLimit getSpeedLimit() {
+			return speedLimit;
+		}
+    }
+
+    @Sequence
+    public static class SafetyCarContainer2 implements SafetyCarContainerInterface {
+        LightBarSirenInUse lightBarSirenInUse;
+        @Asn1Optional CauseCode2 incidentIndication;
+        @Asn1Optional TrafficRule trafficRule;
+        @Asn1Optional SpeedLimit speedLimit;
+
+        public SafetyCarContainer2() { this(new LightBarSirenInUse()); }
+        public SafetyCarContainer2(LightBarSirenInUse lightBarSirenInUse) { this(lightBarSirenInUse, null, null, null); }
+        public SafetyCarContainer2(LightBarSirenInUse lightBarSirenInUse,
+                CauseCode2 incidentIndication,
+             TrafficRule trafficRule,
+             SpeedLimit speedLimit) {
+            this.lightBarSirenInUse = lightBarSirenInUse;
+            this.incidentIndication = incidentIndication;
+            this.trafficRule = trafficRule;
+            this.speedLimit = speedLimit;
+        }
+		public LightBarSirenInUse getLightBarSirenInUse() {
+
+            return lightBarSirenInUse;
+		}
+		public boolean hasIncidentIndication(){
+
+            return incidentIndication!=null;
+		}
+		public CauseCodeInterface getIncidentIndication() {
 
             return incidentIndication;
 		}
@@ -2506,20 +2593,33 @@ public class CoopIts {
 		public String toString();
     }
     public interface DecentralizedEnvironmentalNotificationMessageInterface {
-
+        public ManagementContainer getManagement();
+		public boolean hasSituation();
+		public SituationContainerInterface getSituation();
+		public boolean hasLocation();
+		public LocationContainer getLocation();
+		public boolean hasAlacarte();
+		public AlacarteContainer getAlacarte();
+        public String toString();
     }
     public interface SituationContainerInterface {
-
+        public InformationQuality getInformationQuality();
+		public CauseCodeInterface getEventType();
+		public boolean hasLinkedCause();
+		public CauseCodeInterface getLinkedCause();
+		public boolean hasEventHistory();
+		public EventHistory getEventHistory();
+        public String toString();
     }
 
     @Sequence
-    public static class Denm implements DenmInterface {
+    public static class Denm1 implements DenmInterface {
         ItsPduHeader header;
-        DecentralizedEnvironmentalNotificationMessage denm;
+        DecentralizedEnvironmentalNotificationMessage1 denm;
 
-        public Denm() { this (new ItsPduHeader(new MessageId(MessageId.denm)), new DecentralizedEnvironmentalNotificationMessage()); }
+        public Denm1() { this (new ItsPduHeader(new MessageId(MessageId.denm)), new DecentralizedEnvironmentalNotificationMessage1()); }
 
-        public Denm(ItsPduHeader header, DecentralizedEnvironmentalNotificationMessage denm) {
+        public Denm1(ItsPduHeader header, DecentralizedEnvironmentalNotificationMessage1 denm) {
             
             this.header = header;
             this.denm = denm;
@@ -2631,23 +2731,23 @@ public class CoopIts {
     }
 
     @Sequence
-    public static class DecentralizedEnvironmentalNotificationMessage implements DecentralizedEnvironmentalNotificationMessageInterface {
+    public static class DecentralizedEnvironmentalNotificationMessage1 implements DecentralizedEnvironmentalNotificationMessageInterface {
         ManagementContainer management;
-        @Asn1Optional SituationContainer situation;
+        @Asn1Optional SituationContainer1 situation;
         @Asn1Optional LocationContainer location;
         @Asn1Optional AlacarteContainer alacarte;
 
-        public DecentralizedEnvironmentalNotificationMessage() {
+        public DecentralizedEnvironmentalNotificationMessage1() {
             this(new ManagementContainer());
         }
 
-        public DecentralizedEnvironmentalNotificationMessage(ManagementContainer management) {
+        public DecentralizedEnvironmentalNotificationMessage1(ManagementContainer management) {
             this(management, null, null, null);
         }
         
-        public DecentralizedEnvironmentalNotificationMessage(
+        public DecentralizedEnvironmentalNotificationMessage1(
                 ManagementContainer management,
-                SituationContainer situation,
+                SituationContainer1 situation,
                 LocationContainer location,
                 AlacarteContainer alacarte) {
             this.management = management;
@@ -2664,7 +2764,7 @@ public class CoopIts {
 
             return situation!=null;
 		}
-		public SituationContainer getSituation() {
+		public SituationContainerInterface getSituation() {
 
             return situation;
 		}
@@ -2981,21 +3081,20 @@ public class CoopIts {
     @HasExtensionMarker
     public static class SituationContainer2 implements SituationContainerInterface {
         InformationQuality informationQuality;
-        Boolean iDontKnowWhatThisFieldIs; //TODO: HACK TO FIX VERSION 2 COMPATIBILITY!!!! OMG.. this is terrible. :(
-        CauseCode eventType;
-        @Asn1Optional CauseCode linkedCause;
+        CauseCode2 eventType;
+        @Asn1Optional CauseCode2 linkedCause;
         @Asn1Optional EventHistory eventHistory;
 
         public SituationContainer2() {
-            this(new InformationQuality(), new CauseCode());
+            this(new InformationQuality(), new CauseCode2());
         }
-        public SituationContainer2(InformationQuality informationQuality, CauseCode eventType) {
+        public SituationContainer2(InformationQuality informationQuality, CauseCode2 eventType) {
             this(informationQuality, eventType, null, null);
         }
         public SituationContainer2(
                 InformationQuality informationQuality,
-                CauseCode eventType,
-                CauseCode linkedCause,
+                CauseCode2 eventType,
+                CauseCode2 linkedCause,
                 EventHistory eventHistory
                 ) {
             this.informationQuality = informationQuality;
@@ -3008,7 +3107,7 @@ public class CoopIts {
             return informationQuality;
 		}
 
-		public CauseCode getEventType() {
+		public CauseCodeInterface getEventType() {
 
             return eventType;
 		}
@@ -3016,7 +3115,7 @@ public class CoopIts {
 
             return linkedCause!=null;
 		}
-		public CauseCode getLinkedCause() {
+		public CauseCodeInterface getLinkedCause() {
 
             return linkedCause;
 		}
@@ -3031,28 +3130,29 @@ public class CoopIts {
 
         @Override
         public String toString() {
+            // TODO Auto-generated method stub
             return "SituationContainer(InformationQual:"+this.getInformationQuality().value+", CauseCode:"+this.getEventType().getCauseCode().value+"("+this.getEventType().getCauseCode().getName()+")"+", subCauseCode:"+this.getEventType().getSubCauseCode().value+")";
         }
     }
 
     @Sequence
     @HasExtensionMarker
-    public static class SituationContainer implements SituationContainerInterface {
+    public static class SituationContainer1 implements SituationContainerInterface {
         InformationQuality informationQuality;
-        CauseCode eventType;
-        @Asn1Optional CauseCode linkedCause;
+        CauseCode1 eventType;
+        @Asn1Optional CauseCode1 linkedCause;
         @Asn1Optional EventHistory eventHistory;
 
-        public SituationContainer() {
-            this(new InformationQuality(), new CauseCode());
+        public SituationContainer1() {
+            this(new InformationQuality(), new CauseCode1());
         }
-        public SituationContainer(InformationQuality informationQuality, CauseCode eventType) {
+        public SituationContainer1(InformationQuality informationQuality, CauseCode1 eventType) {
             this(informationQuality, eventType, null, null);
         }
-        public SituationContainer(
+        public SituationContainer1(
                 InformationQuality informationQuality,
-                CauseCode eventType,
-                CauseCode linkedCause,
+                CauseCode1 eventType,
+                CauseCode1 linkedCause,
                 EventHistory eventHistory
                 ) {
             this.informationQuality = informationQuality;
@@ -3065,7 +3165,7 @@ public class CoopIts {
             return informationQuality;
 		}
 
-		public CauseCode getEventType() {
+		public CauseCodeInterface getEventType() {
 
             return eventType;
 		}
@@ -3073,7 +3173,7 @@ public class CoopIts {
 
             return linkedCause!=null;
 		}
-		public CauseCode getLinkedCause() {
+		public CauseCodeInterface getLinkedCause() {
 
             return linkedCause;
 		}
@@ -3464,7 +3564,7 @@ public class CoopIts {
         @Asn1Optional ClosedLanes closedLanes;
         @Asn1Optional RestrictedTypes restriction;
         @Asn1Optional SpeedLimit speedLimit;
-        @Asn1Optional CauseCode incidentIndication;
+        @Asn1Optional CauseCodeInterface incidentIndication;
         @Asn1Optional ItineraryPath recommendedPath;
         @Asn1Optional DeltaReferencePosition startingPointSpeedLimit;
         @Asn1Optional TrafficRule trafficFlowRule;
@@ -3480,7 +3580,7 @@ public class CoopIts {
                 ClosedLanes closedLanes,
                 RestrictedTypes restriction,
                 SpeedLimit speedLimit,
-                CauseCode incidentIndication,
+                CauseCodeInterface incidentIndication,
                 ItineraryPath recommendedPath,
                 DeltaReferencePosition startingPointSpeedLimit,
                 TrafficRule trafficFlowRule,
@@ -3532,7 +3632,7 @@ public class CoopIts {
 
             return incidentIndication!=null;
 		}
-		public CauseCode getIncidentIndication() {
+		public CauseCodeInterface getIncidentIndication() {
 			return incidentIndication;
 		}
 		public boolean hasRecommendedPath(){
@@ -3753,7 +3853,7 @@ public class CoopIts {
     @Sequence
     public static class StationaryVehicleContainer {
         @Asn1Optional StationarySince stationarySince;
-        @Asn1Optional CauseCode stationaryCause;
+        @Asn1Optional CauseCodeInterface stationaryCause;
         @Asn1Optional DangerousGoodsExtended carryingDangerousGoods;
         @Asn1Optional NumberOfOccupants numberOfOccupants;
         @Asn1Optional VehicleIdentification vehicleIdentification;
@@ -3764,7 +3864,7 @@ public class CoopIts {
         }
         public StationaryVehicleContainer(
                 StationarySince stationarySince,
-                CauseCode stationaryCause,
+                CauseCodeInterface stationaryCause,
                 DangerousGoodsExtended carryingDangerousGoods,
                 NumberOfOccupants numberOfOccupants,
                 VehicleIdentification vehicleIdentification,
@@ -3789,7 +3889,7 @@ public class CoopIts {
 
             return stationaryCause!=null;
 		}
-		public CauseCode getStationaryCause() {
+		public CauseCodeInterface getStationaryCause() {
 
             return stationaryCause;
 		}

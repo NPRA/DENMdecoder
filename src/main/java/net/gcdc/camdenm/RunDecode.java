@@ -1,9 +1,10 @@
 package net.gcdc.camdenm;
 
 import net.gcdc.asn1.uper.UperEncoder;
-import net.gcdc.camdenm.CoopIts.Denm;
+import net.gcdc.camdenm.CoopIts.Denm1;
 import net.gcdc.camdenm.CoopIts.Denm2;
 import net.gcdc.camdenm.CoopIts.DenmInterface;
+import net.gcdc.camdenm.CoopIts.ItsPduHeader.ProtocolVersion;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +20,15 @@ public class RunDecode {
     }
 
     public static long myTest(byte[] encoded) throws IllegalArgumentException, IllegalAccessException, InstantiationException, AssertionError {
-        Denm decoded = UperEncoder.decode(encoded, Denm.class);
+        DenmInterface decoded = UperEncoder.decode(encoded, Denm2.class);
         System.out.println(decoded);
         return decoded.getHeader().stationID.value;
     }
 
     public static DenmInterface getDecoded(byte[] encoded) throws IllegalArgumentException, IllegalAccessException, InstantiationException, AssertionError {
-        DenmInterface denm = UperEncoder.decode(encoded, Denm.class);
-        if(denm.getHeader().protocolVersion.value == 2)
-            denm = UperEncoder.decode(encoded, Denm2.class);
+        DenmInterface denm = UperEncoder.decode(encoded, Denm2.class);
+        if(denm.getHeader().protocolVersion.value == 1)
+            denm = UperEncoder.decode(encoded, Denm1.class);
         return denm;
     }
 
