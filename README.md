@@ -2,7 +2,7 @@
 His repo can be found [here](https://github.com/alexvoronov/geonetworking)
 (Sorry for butchering your code)
 
-For usage example see main method in src/main/java/net/gcdc/geonetworking/GeonetStation.java
+For usage example see main method in [src/main/java/net/gcdc/geonetworking/GeonetStation.java](https://github.com/NPRA/DENMdecoder/blob/3a3e8c53a0fa0fc7aac67fcdd46bd00388df28e8/src/main/java/net/gcdc/geonetworking/GeonetStation.java)
 
 
 
