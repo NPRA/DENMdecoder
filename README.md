@@ -2,6 +2,10 @@
 His repo can be found [here](https://github.com/alexvoronov/geonetworking)
 (Sorry for butchering your code)
 
+For usage example see main method in src/main/java/net/gcdc/geonetworking/GeonetStation.java
+
+
+
 # ETSI ITS G5 GeoNetworking Stack [![Build Status](https://travis-ci.org/alexvoronov/geonetworking.svg?branch=master)](https://travis-ci.org/alexvoronov/geonetworking) [![Coverage Status](https://coveralls.io/repos/alexvoronov/geonetworking/badge.svg)](https://coveralls.io/r/alexvoronov/geonetworking) [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.55650.svg)](http://dx.doi.org/10.5281/zenodo.55650)
 
 A part of [ETSI](http://en.wikipedia.org/wiki/ETSI) ITS G5 stack including: 
