@@ -250,6 +250,7 @@ public class GeonetStation {
         // denminterface could be either of type denm.class or denm2.class depending on if it is protocol version 1 or 2 
         DenmInterface decodedDenm = station.decodeGeoNetworking(GeonetStation.bytesFromHexString(GeonetStation.testmsg));
         System.out.println(decodedDenm);
+        System.out.println(decodedDenm.toJson());
     }
 
 }

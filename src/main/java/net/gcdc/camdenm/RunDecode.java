@@ -4,10 +4,6 @@ import net.gcdc.asn1.uper.UperEncoder;
 import net.gcdc.camdenm.CoopIts.Denm1;
 import net.gcdc.camdenm.CoopIts.Denm2;
 import net.gcdc.camdenm.CoopIts.DenmInterface;
-import net.gcdc.camdenm.CoopIts.ItsPduHeader.ProtocolVersion;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RunDecode {
 

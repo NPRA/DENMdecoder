@@ -21,7 +21,7 @@ import net.gcdc.asn1.datatypes.OctetString;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypes.SizeRange;
-import net.gcdc.camdenm.CoopIts1.SafetyCarContainer;
+//import net.gcdc.camdenm.CoopIts1.SafetyCarContainer;
 import net.gcdc.camdenm.CoopIts.ItsPduHeader.MessageId;
 
 //terrible hack in situationcontainer (sorry)
@@ -37,17 +37,22 @@ import net.gcdc.camdenm.CoopIts.ItsPduHeader.MessageId;
  */
 public class CoopIts {
 
-    @Sequence
-    public static class Cam {
-        ItsPduHeader header;
-        CoopAwareness cam;
+    public static interface CamInterface {
+        public ItsPduHeader getHeader();
+        public CoopAwarenessInterface getCam();
+    }
 
-        public Cam(ItsPduHeader itsPduHeader, CoopAwareness coopAwareness) {
+    @Sequence
+    public static class Cam1 implements CamInterface{
+        ItsPduHeader header;
+        CoopAwareness1 cam;
+
+        public Cam1(ItsPduHeader itsPduHeader, CoopAwareness1 coopAwareness) {
             this.header = itsPduHeader;
             this.cam = coopAwareness;
         }
 
-        public Cam() { this(new ItsPduHeader(new MessageId(MessageId.cam)), new CoopAwareness()); }
+        public Cam1() { this(new ItsPduHeader(new MessageId(MessageId.cam)), new CoopAwareness1()); }
 
         @Override public String toString() { return "CAM(" + header + ", " + cam + ")"; }
 
@@ -55,7 +60,30 @@ public class CoopIts {
 			return header;
 		}
 
-		public CoopAwareness getCam() {
+		public CoopAwareness1 getCam() {
+			return cam;
+		}
+    }
+
+    @Sequence
+    public static class Cam2 implements CamInterface{
+        ItsPduHeader header;
+        CoopAwareness2 cam;
+
+        public Cam2(ItsPduHeader itsPduHeader, CoopAwareness2 coopAwareness) {
+            this.header = itsPduHeader;
+            this.cam = coopAwareness;
+        }
+
+        public Cam2() { this(new ItsPduHeader(new MessageId(MessageId.cam)), new CoopAwareness2()); }
+
+        @Override public String toString() { return "CAM(" + header + ", " + cam + ")"; }
+
+		public ItsPduHeader getHeader() {
+			return header;
+		}
+
+		public CoopAwareness2 getCam() {
 			return cam;
 		}
     }
@@ -126,19 +154,25 @@ public class CoopIts {
         public StationID(long value) { super(value); }
     }
 
+    public interface CoopAwarenessInterface {
+        public String toString();
+        public GenerationDeltaTime getGenerationDeltaTime();
+        public CamParametersInterface getCamParameters();
+    }
+
     @Sequence
-    public static class CoopAwareness {
+    public static class CoopAwareness1 implements CoopAwarenessInterface {
         @Override public String toString() {
             return "CoopAwareness(generationDeltaTime=" + generationDeltaTime + ", "
                     + camParameters + ")";
         }
         GenerationDeltaTime generationDeltaTime;
-        CamParameters camParameters;
+        CamParameters1 camParameters;
 
-        public CoopAwareness() {
-            this(new GenerationDeltaTime(), new CamParameters());
+        public CoopAwareness1() {
+            this(new GenerationDeltaTime(), new CamParameters1());
         }
-        public CoopAwareness(GenerationDeltaTime generationDeltaTime, CamParameters camParameters) {
+        public CoopAwareness1(GenerationDeltaTime generationDeltaTime, CamParameters1 camParameters) {
             this.generationDeltaTime = generationDeltaTime;
             this.camParameters = camParameters;
         }
@@ -146,11 +180,39 @@ public class CoopIts {
 
             return generationDeltaTime;
 		}
-		public CamParameters getCamParameters() {
+		public CamParameters1 getCamParameters() {
 
             return camParameters;
 		}
     }
+
+    @Sequence
+    public static class CoopAwareness2 implements CoopAwarenessInterface {
+        @Override public String toString() {
+            return "CoopAwareness(generationDeltaTime=" + generationDeltaTime + ", "
+                    + camParameters + ")";
+        }
+        GenerationDeltaTime generationDeltaTime;
+        CamParameters2 camParameters;
+
+        public CoopAwareness2() {
+            this(new GenerationDeltaTime(), new CamParameters2());
+        }
+        public CoopAwareness2(GenerationDeltaTime generationDeltaTime, CamParameters2 camParameters) {
+            this.generationDeltaTime = generationDeltaTime;
+            this.camParameters = camParameters;
+        }
+		public GenerationDeltaTime getGenerationDeltaTime() {
+
+            return generationDeltaTime;
+		}
+		public CamParameters2 getCamParameters() {
+
+            return camParameters;
+		}
+    }
+
+    
 
     @IntRange(minValue = 0, maxValue = 65535)
     public static class GenerationDeltaTime extends Asn1Integer {
@@ -165,9 +227,19 @@ public class CoopIts {
         }
     }
 
+    public interface CamParametersInterface {
+        public String toString();
+        public BasicContainer getBasicContainer();
+		public HighFrequencyContainer getHighFrequencyContainer();
+		public boolean hasLowFrequencyContainer();
+		public LowFrequencyContainer getLowFrequencyContainer();
+		public boolean hasspecialVehicleContainer();
+		public SpecialVehicleContainerInterface getSpecialVehicleContainer();
+    }
+
     @Sequence
     @HasExtensionMarker
-    public static class CamParameters {
+    public static class CamParameters1 implements CamParametersInterface {
         @Override public String toString() {
             return "CamParameters(Basic: " + basicContainer + ", HF: "
                     + highFrequencyContainer + ", LF: " + lowFrequencyContainer
@@ -177,11 +249,11 @@ public class CoopIts {
         BasicContainer basicContainer;
         HighFrequencyContainer highFrequencyContainer;
         @Asn1Optional LowFrequencyContainer lowFrequencyContainer;
-        @Asn1Optional SpecialVehicleContainer specialVehicleContainer;
+        @Asn1Optional SpecialVehicleContainer1 specialVehicleContainer;
 
-        public CamParameters() { this(new BasicContainer(), new HighFrequencyContainer()); }
+        public CamParameters1() { this(new BasicContainer(), new HighFrequencyContainer()); }
 
-        public CamParameters(
+        public CamParameters1(
                 BasicContainer basicContainer,
                 HighFrequencyContainer highFrequencyContainer
                 ) {
@@ -189,10 +261,10 @@ public class CoopIts {
             this.highFrequencyContainer = highFrequencyContainer;
         }
 
-        public CamParameters(BasicContainer basicContainer,
+        public CamParameters1(BasicContainer basicContainer,
         HighFrequencyContainer highFrequencyContainer,
         LowFrequencyContainer lowFrequencyContainer,
-        SpecialVehicleContainer specialVehicleContainer) {
+        SpecialVehicleContainer1 specialVehicleContainer) {
             this.basicContainer = basicContainer;
             this.highFrequencyContainer = highFrequencyContainer;
             this.lowFrequencyContainer = lowFrequencyContainer;
@@ -220,7 +292,67 @@ public class CoopIts {
 			return specialVehicleContainer!= null;
 		}
 		
-		public SpecialVehicleContainer getSpecialVehicleContainer() {
+		public SpecialVehicleContainer1 getSpecialVehicleContainer() {
+			return specialVehicleContainer;
+		}
+    }
+
+    @Sequence
+    @HasExtensionMarker
+    public static class CamParameters2 implements CamParametersInterface {
+        @Override public String toString() {
+            return "CamParameters(Basic: " + basicContainer + ", HF: "
+                    + highFrequencyContainer + ", LF: " + lowFrequencyContainer
+                    + ", Special: " + specialVehicleContainer + ")";
+        }
+
+        BasicContainer basicContainer;
+        HighFrequencyContainer highFrequencyContainer;
+        @Asn1Optional LowFrequencyContainer lowFrequencyContainer;
+        @Asn1Optional SpecialVehicleContainer2 specialVehicleContainer;
+
+        public CamParameters2() { this(new BasicContainer(), new HighFrequencyContainer()); }
+
+        public CamParameters2(
+                BasicContainer basicContainer,
+                HighFrequencyContainer highFrequencyContainer
+                ) {
+            this.basicContainer = basicContainer;
+            this.highFrequencyContainer = highFrequencyContainer;
+        }
+
+        public CamParameters2(BasicContainer basicContainer,
+        HighFrequencyContainer highFrequencyContainer,
+        LowFrequencyContainer lowFrequencyContainer,
+        SpecialVehicleContainer2 specialVehicleContainer) {
+            this.basicContainer = basicContainer;
+            this.highFrequencyContainer = highFrequencyContainer;
+            this.lowFrequencyContainer = lowFrequencyContainer;
+            this.specialVehicleContainer = specialVehicleContainer;
+
+        }
+
+		public BasicContainer getBasicContainer() {
+			return basicContainer;
+		}
+
+		public HighFrequencyContainer getHighFrequencyContainer() {
+			return highFrequencyContainer;
+		}
+
+		public boolean hasLowFrequencyContainer(){
+			return lowFrequencyContainer!= null;
+		}
+		
+		public LowFrequencyContainer getLowFrequencyContainer() {
+			return lowFrequencyContainer;
+		}
+		
+		public boolean hasspecialVehicleContainer(){
+			return specialVehicleContainer!= null;
+		}
+		
+		public SpecialVehicleContainer2 getSpecialVehicleContainer() {
 			return specialVehicleContainer;
 		}
     }
@@ -1760,40 +1892,57 @@ public class CoopIts {
         }
     }
 
+    public interface SpecialVehicleContainerInterface {
+        public boolean hasPublicTransportContainer();
+		public PublicTransportContainer getPublicTransportContainer();
+		public boolean hasSpecialTransportContainer();
+		public SpecialTransportContainer getSpecialTransportContainer();
+		public boolean hasDangerousGoodsContainer();
+		public DangerousGoodsContainer getDangerousGoodsContainer();
+		public boolean hasRoadWorksContainerBasic();
+		public RoadWorksContainerBasic getRoadWorksContainerBasic();
+		public boolean hasRescueContainer();
+		public RescueContainer getRescueContainer();
+		public boolean hasEmergencyContainer();
+		public EmergencyContainer getEmergencyContainer();
+		public boolean hasSafetyCarContainer();
+		public SafetyCarContainerInterface getSafetyCarContainer();
+    }
+
     @Choice
     @HasExtensionMarker
-    public static class SpecialVehicleContainer {
+    public static class SpecialVehicleContainer1 implements SpecialVehicleContainerInterface {
         PublicTransportContainer publicTransportContainer;
         SpecialTransportContainer specialTransportContainer;
         DangerousGoodsContainer dangerousGoodsContainer;
         RoadWorksContainerBasic roadWorksContainerBasic;
         RescueContainer rescueContainer;
         EmergencyContainer emergencyContainer;
-        SafetyCarContainer safetyCarContainer;
+        SafetyCarContainer1 safetyCarContainer;
 
-        public SpecialVehicleContainer() {
+        public SpecialVehicleContainer1() {
             this(new PublicTransportContainer());
         }
 
-        public SpecialVehicleContainer(PublicTransportContainer publicTransportContainer) {
+        public SpecialVehicleContainer1(PublicTransportContainer publicTransportContainer) {
             this.publicTransportContainer = publicTransportContainer;
         }
-        public SpecialVehicleContainer(SpecialTransportContainer specialTransportContainer) {
+        public SpecialVehicleContainer1(SpecialTransportContainer specialTransportContainer) {
             this.specialTransportContainer = specialTransportContainer;
         }
-        public SpecialVehicleContainer(DangerousGoodsContainer dangerousGoodsContainer) {
+        public SpecialVehicleContainer1(DangerousGoodsContainer dangerousGoodsContainer) {
             this.dangerousGoodsContainer = dangerousGoodsContainer;
         }
-        public SpecialVehicleContainer(RoadWorksContainerBasic roadWorksContainerBasic) {
+        public SpecialVehicleContainer1(RoadWorksContainerBasic roadWorksContainerBasic) {
             this.roadWorksContainerBasic = roadWorksContainerBasic;
         }
-        public SpecialVehicleContainer(RescueContainer rescueContainer) {
+        public SpecialVehicleContainer1(RescueContainer rescueContainer) {
             this.rescueContainer = rescueContainer;
         }
-        public SpecialVehicleContainer(EmergencyContainer emergencyContainer) {
+        public SpecialVehicleContainer1(EmergencyContainer emergencyContainer) {
             this.emergencyContainer = emergencyContainer;
         }
-        public SpecialVehicleContainer(SafetyCarContainer safetyCarContainer) {
+        public SpecialVehicleContainer1(SafetyCarContainer1 safetyCarContainer) {
             this.safetyCarContainer = safetyCarContainer;
         }
 
@@ -1848,11 +1997,106 @@ public class CoopIts {
 
             return safetyCarContainer != null;
         }
-		public SafetyCarContainer getSafetyCarContainer() {
+		public SafetyCarContainer1 getSafetyCarContainer() {
 
             return safetyCarContainer;
 		}
     }
+
+    @Choice
+    @HasExtensionMarker
+    public static class SpecialVehicleContainer2 implements SpecialVehicleContainerInterface {
+        PublicTransportContainer publicTransportContainer;
+        SpecialTransportContainer specialTransportContainer;
+        DangerousGoodsContainer dangerousGoodsContainer;
+        RoadWorksContainerBasic roadWorksContainerBasic;
+        RescueContainer rescueContainer;
+        EmergencyContainer emergencyContainer;
+        SafetyCarContainer2 safetyCarContainer;
+
+        public SpecialVehicleContainer2() {
+            this(new PublicTransportContainer());
+        }
+
+        public SpecialVehicleContainer2(PublicTransportContainer publicTransportContainer) {
+            this.publicTransportContainer = publicTransportContainer;
+        }
+        public SpecialVehicleContainer2(SpecialTransportContainer specialTransportContainer) {
+            this.specialTransportContainer = specialTransportContainer;
+        }
+        public SpecialVehicleContainer2(DangerousGoodsContainer dangerousGoodsContainer) {
+            this.dangerousGoodsContainer = dangerousGoodsContainer;
+        }
+        public SpecialVehicleContainer2(RoadWorksContainerBasic roadWorksContainerBasic) {
+            this.roadWorksContainerBasic = roadWorksContainerBasic;
+        }
+        public SpecialVehicleContainer2(RescueContainer rescueContainer) {
+            this.rescueContainer = rescueContainer;
+        }
+        public SpecialVehicleContainer2(EmergencyContainer emergencyContainer) {
+            this.emergencyContainer = emergencyContainer;
+        }
+        public SpecialVehicleContainer2(SafetyCarContainer2 safetyCarContainer) {
+            this.safetyCarContainer = safetyCarContainer;
+        }
+
+        public boolean hasPublicTransportContainer(){
+
+            return publicTransportContainer != null;
+        }
+		public PublicTransportContainer getPublicTransportContainer() {
+			return publicTransportContainer;
+		}
+		public boolean hasSpecialTransportContainer(){
+
+            return specialTransportContainer != null;
+        }
+		public SpecialTransportContainer getSpecialTransportContainer() {
+
+            return specialTransportContainer;
+		}
+		public boolean hasDangerousGoodsContainer(){
+
+            return dangerousGoodsContainer != null;
+        }
+		public DangerousGoodsContainer getDangerousGoodsContainer() {
+
+            return dangerousGoodsContainer;
+		}
+		public boolean hasRoadWorksContainerBasic(){
+
+            return roadWorksContainerBasic != null;
+        }
+		public RoadWorksContainerBasic getRoadWorksContainerBasic() {
+
+            return roadWorksContainerBasic;
+		}
+		public boolean hasRescueContainer(){
+
+            return rescueContainer != null;
+        }
+		public RescueContainer getRescueContainer() {
+
+            return rescueContainer;
+		}
+		public boolean hasEmergencyContainer()
+        {
+        	return emergencyContainer != null;
+        }
+		public EmergencyContainer getEmergencyContainer() {
+
+            return emergencyContainer;
+		}
+		public boolean hasSafetyCarContainer(){
+
+            return safetyCarContainer != null;
+        }
+		public SafetyCarContainer2 getSafetyCarContainer() {
+
+            return safetyCarContainer;
+		}
+    }
+
 
     @Sequence
     public static class PublicTransportContainer {
@@ -2591,6 +2835,7 @@ public class CoopIts {
         public ItsPduHeader getHeader();
 		public DecentralizedEnvironmentalNotificationMessageInterface getDenm();
 		public String toString();
+        public String toJson();
     }
     public interface DecentralizedEnvironmentalNotificationMessageInterface {
         public ManagementContainer getManagement();
@@ -2638,6 +2883,63 @@ public class CoopIts {
 
             return "Denm(\n\t"+header+",\n\t"+denm+"\n)";
 		}
+        @Override
+        public String toJson() {
+            StringBuilder json = new StringBuilder();
+            json.append("{\"header\":{");
+                json.append("\"protocolVersion\":");
+                json.append(header.getProtocolVersion());
+                json.append(",\"messageID\":");
+                json.append(header.getMessageID());
+                json.append(",\"stationID\":");
+                json.append(header.getStationID());
+            json.append("},\"denm\":{");
+                json.append("\"managementContainer\":{");
+                    json.append("\"originatingStationID\":");
+                    json.append(denm.getManagement().getActionID().getOriginatingStationID());
+                    json.append(",\"sequenceNumber\":");
+                    json.append(denm.getManagement().getActionID().getSequenceNumber());
+                    json.append(",\"detectionTime\":");
+                    json.append(denm.getManagement().getDetectionTime().value());
+                    json.append(",\"referenceTime\":");
+                    json.append(denm.getManagement().getReferenceTime().value());
+                    json.append(",\"latitude\":");
+                    json.append(denm.getManagement().getEventPosition().latitude.value/10000000.);
+                    json.append(",\"longitude\":");
+                    json.append(denm.getManagement().getEventPosition().longitude.value/10000000.);
+                    json.append(",\"stationType\":\"");
+                    json.append(denm.getManagement().getStationType().getName()+"\"");
+                    json.append(",\"RelevanceDistance\":");
+                    if(denm.getManagement().getRelevanceDistance() != null)
+                        json.append(denm.getManagement().getRelevanceDistance().value);
+                    else
+                        json.append("null");
+                    json.append(",\"RelevanceTrafficDirection\":");
+                    if(denm.getManagement().getRelevanceTrafficDirection() != null)
+                        json.append(denm.getManagement().getRelevanceTrafficDirection().value);
+                    else
+                        json.append("null");
+                    json.append(",\"ValidityDuration\":");
+                    json.append(denm.getManagement().getValidityDuration().value);
+                    json.append(",\"TransmissionInterval\":");
+                    if(denm.getManagement().getTransmissionInterval() != null)
+                        json.append(denm.getManagement().getTransmissionInterval().value);
+                    else
+                        json.append("null");
+                json.append("},");
+                json.append("\"situationContainer\":{");
+                    json.append("\"informationQual\":");
+                    json.append(denm.situation.getInformationQuality().value);
+                    json.append(",\"causeCode\":");
+                    json.append(denm.situation.getEventType().getCauseCode().value);
+                    json.append(",\"causeCodeName\":\"");
+                    json.append(denm.situation.getEventType().getCauseCode().getName()+"\"");
+                    json.append(",\"subCauseCode\":");
+                    json.append(denm.situation.getEventType().getSubCauseCode().value);
+                json.append("}");
+            json.append("}}");
+            return json.toString();
+        }
     }
     @Sequence
     public static class Denm2 implements DenmInterface {
@@ -2665,6 +2967,63 @@ public class CoopIts {
 
             return "Denm(\n\t"+header+",\n\t"+denm+"\n)";
 		}
+        @Override
+        public String toJson() {
+            StringBuilder json = new StringBuilder();
+            json.append("{\"header\":{");
+                json.append("\"protocolVersion\":");
+                json.append(header.getProtocolVersion());
+                json.append(",\"messageID\":");
+                json.append(header.getMessageID());
+                json.append(",\"stationID\":");
+                json.append(header.getStationID());
+            json.append("},\"denm\":{");
+                json.append("\"managementContainer\":{");
+                    json.append("\"originatingStationID\":");
+                    json.append(denm.getManagement().getActionID().getOriginatingStationID());
+                    json.append(",\"sequenceNumber\":");
+                    json.append(denm.getManagement().getActionID().getSequenceNumber());
+                    json.append(",\"detectionTime\":");
+                    json.append(denm.getManagement().getDetectionTime().value());
+                    json.append(",\"referenceTime\":");
+                    json.append(denm.getManagement().getReferenceTime().value());
+                    json.append(",\"latitude\":");
+                    json.append(denm.getManagement().getEventPosition().latitude.value/10000000.);
+                    json.append(",\"longitude\":");
+                    json.append(denm.getManagement().getEventPosition().longitude.value/10000000.);
+                    json.append(",\"stationType\":\"");
+                    json.append(denm.getManagement().getStationType().getName()+"\"");
+                    json.append(",\"RelevanceDistance\":");
+                    if(denm.getManagement().getRelevanceDistance() != null)
+                        json.append(denm.getManagement().getRelevanceDistance().value);
+                    else
+                        json.append("null");
+                    json.append(",\"RelevanceTrafficDirection\":");
+                    if(denm.getManagement().getRelevanceTrafficDirection() != null)
+                        json.append(denm.getManagement().getRelevanceTrafficDirection().value);
+                    else
+                        json.append("null");
+                    json.append(",\"ValidityDuration\":");
+                    json.append(denm.getManagement().getValidityDuration().value);
+                    json.append(",\"TransmissionInterval\":");
+                    if(denm.getManagement().getTransmissionInterval() != null)
+                        json.append(denm.getManagement().getTransmissionInterval().value);
+                    else
+                        json.append("null");
+                json.append("},");
+                json.append("\"situationContainer\":{");
+                    json.append("\"informationQual\":");
+                    json.append(denm.situation.getInformationQuality().value);
+                    json.append(",\"causeCode\":");
+                    json.append(denm.situation.getEventType().getCauseCode().value);
+                    json.append(",\"causeCodeName\":\"");
+                    json.append(denm.situation.getEventType().getCauseCode().getName()+"\"");
+                    json.append(",\"subCauseCode\":");
+                    json.append(denm.situation.getEventType().getSubCauseCode().value);
+                json.append("}");
+            json.append("}}");
+            return json.toString();
+        }
     }
 
 
